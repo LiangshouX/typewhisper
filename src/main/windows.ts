@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import { BrowserWindow, nativeTheme, shell } from 'electron';
 
+import { log } from './logger.js';
 import { appUrl } from './protocol.js';
 import { settings } from './settings.js';
 
@@ -53,6 +54,13 @@ export function openSettingsWindow(): BrowserWindow {
 
   settingsWindow.once('ready-to-show', () => {
     settingsWindow?.show();
+  });
+
+  settingsWindow.webContents.on('console-message', (_event, level, message) => {
+    log.debug('settings', `[渲染进程:${level}] ${message}`);
+  });
+  settingsWindow.webContents.on('preload-error', (_event, preloadPath, error) => {
+    log.error('settings', `preload 加载失败 ${preloadPath}`, error);
   });
 
   settingsWindow.on('closed', () => {

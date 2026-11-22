@@ -237,8 +237,13 @@ app.whenReady().then(async () => {
       .catch((error) => log.warn('hud', '悬浮指示条预热失败', error)),
   ]);
 
-  /* ---- 预热模型 ---- */
-  void pipeline.warmup();
+  /* ---- 预热模型 ----
+   * 延后一点再开始：模型有 239MB，加载时会把磁盘打满，
+   * 拖慢设置页的首次渲染（用户第一眼看到的应该是界面，不是等它）。
+   */
+  setTimeout(() => {
+    void pipeline.warmup();
+  }, 2_500);
 
   /* ---- 自检模式：验证麦克风→识别→纠偏整条链路，不写入任何窗口 ---- */
   if (process.argv.includes('--selftest')) {
@@ -292,8 +297,34 @@ app.whenReady().then(async () => {
         return;
       }
       try {
-        // capturePage 对「还没真正显示」的窗口会失败，先确保它可见
-        if (!win.isVisible()) win.show();
+        // capturePage 对没被激活的窗口可能返回**上一帧**（内容还没画上去），
+        // 所以先把它亮到前台，再等一小会儿让它重绘。
+        win.show();
+        win.focus();
+        win.moveTop();
+        await new Promise((resolve) => setTimeout(resolve, 400));
+
+        // 等页面真的渲染出来（导航项出现），再截
+        await win.webContents.executeJavaScript(
+          `(() => new Promise((resolve) => {
+             const tick = () => {
+               const ready = document.querySelector('.nav__item') && !document.body.dataset.loading;
+               if (ready) return resolve(true);
+               setTimeout(tick, 120);
+             };
+             tick();
+             setTimeout(() => resolve(false), 30000);
+           }))()`,
+        );
+        // 再等两帧，确保主题/内容已经画到屏幕上
+        await win.webContents.executeJavaScript(
+          'new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)))',
+        );
+        await new Promise((resolve) => setTimeout(resolve, 600));
+        const theme = await win.webContents.executeJavaScript(
+          'document.documentElement.dataset.ivTheme || "(未设置)"',
+        );
+        log.info('shot', `当前主题：${theme}`);
         const image = await win.webContents.capturePage();
         if (image.isEmpty()) throw new Error('截图为空');
         await writeFile(target, image.toPNG());

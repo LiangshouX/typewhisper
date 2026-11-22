@@ -7,9 +7,10 @@ const path = require('node:path');
 const { spawn } = require('node:child_process');
 
 const theme = process.argv[2] || 'light';
-const out = process.argv[3] || path.join(process.env.TEMP, `qingyu-${theme}.png`);
+const out = process.argv[3] || path.join(process.env.TEMP, `typewhisper-${theme}.png`);
+const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'package.json'), 'utf8'));
 
-const appDir = path.join(process.env.APPDATA, '轻语 QingYu');
+const appDir = path.join(process.env.APPDATA, pkg.productName);
 const settingsPath = path.join(appDir, 'settings.json');
 
 const settings = {
