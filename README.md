@@ -267,6 +267,7 @@ node scripts/probe-accelerators.cjs   # 探测本机哪些全局快捷键组合�
 ## 发版到 GitHub Release
 
 仓库：**https://github.com/LiangshouX/typewhisper**
+Release：**https://github.com/LiangshouX/typewhisper/releases**
 
 仓库里已经带好工作流：
 
@@ -281,10 +282,13 @@ node scripts/probe-accelerators.cjs   # 探测本机哪些全局快捷键组合�
 # 1. 改 package.json 里的 version
 # 2. 提交并打标签
 git tag v0.2.0 && git push origin main --tags
-# 3. 等 Actions 跑完，Release 页就有 Typewhisper-<版本>-x64-免安装.zip 了
+# 3. 等 Actions 跑完，Release 页就有 Typewhisper-<版本>-win-x64-portable.zip 了
 ```
 
 Release 页会直接给出压缩包链接，用户下载解压即用 —— **不是安装程序**。
+
+> 压缩包文件名只用 ASCII：中文后缀在 CI 的 tar / 控制台编码下会被吃掉
+> （实测「免安装」变成空串）。
 
 > 打标签前记得先在本地 `npm run pack` 跑一遍，确认打包没问题。
 
