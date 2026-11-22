@@ -1,0 +1,37 @@
+{
+  "name": "typewhisper",
+  "productName": "Typewhisper",
+  "version": "0.1.0",
+  "description": "Typewhisper — 轻量级 Windows 全局语音输入工具：按住快捷键说话，识别结果直接插入光标位置，并由大模型纠偏。",
+  "license": "MIT",
+  "author": "typewhisper",
+  "main": "dist/main/index.cjs",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:watch": "node scripts/build.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "start": "npm run build && node scripts/run.mjs",
+    "dev": "npm run build && node scripts/run.mjs --dev",
+    "icon": "node scripts/make-icon.mjs",
+    "pack": "npm run build && npm run pack:dir && npm run pack:zip",
+    "pack:dir": "electron-builder --win --x64 --dir --publish never && node scripts/postprocess-icon.cjs",
+    "pack:zip": "node scripts/make-zip.cjs",
+    "verify:asr": "node scripts/verify-asr.cjs",
+    "verify:win32": "node scripts/verify-win32.cjs",
+    "verify:llm": "node scripts/verify-llm.cjs",
+    "verify:llm-trace": "node scripts/verify-llm-trace.cjs",
+    "probe:hotkeys": "electron scripts/probe-accelerators.cjs"
+  },
+  "dependencies": {
+    "koffi": "^3.3.8",
+    "sherpa-onnx-node": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "electron": "^45.4.1",
+    "electron-builder": "^25.1.8",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.2"
+  }
+}

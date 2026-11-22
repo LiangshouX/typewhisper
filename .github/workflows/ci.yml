@@ -1,0 +1,36 @@
+# 常规检查：推分支 / 提 PR 时跑一遍
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: 类型检查与构建
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 类型检查
+        run: npm run typecheck
+
+      - name: 构建
+        run: npm run build
+
+      - name: Win32 层自检（不发按键）
+        run: node scripts/verify-win32.cjs
+
+      - name: 纠偏层自检（本地 mock 服务，不打真实 API）
+        run: node scripts/verify-llm-trace.cjs

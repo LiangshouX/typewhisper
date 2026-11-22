@@ -1,0 +1,18 @@
+# 依赖与构建产物
+node_modules/
+dist/
+release/
+
+# 图标是构建产物，但体积小且方便复现，保留在版本库里
+!build/icon.ico
+!build/icon.png
+
+# 编辑器与系统
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# 日志与临时文件
+*.log
+npm-debug.log*

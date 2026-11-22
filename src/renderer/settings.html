@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="zh-CN" data-iv-page="1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Typewhisper · 设置</title>
+    <link rel="stylesheet" href="./settings.css" />
+  </head>
+  <body>
+    <!-- ============================ 标题栏（窗口按钮由主进程处理） ============ -->
+    <header class="titlebar">
+      <div class="titlebar__brand">
+        <!-- 品牌标记：手写麦克风造型（胶囊头 + U 形架 + 底座） -->
+        <span class="titlebar__logo" aria-hidden="true">
+          <svg width="21" height="21" viewBox="0 0 32 32" fill="none" stroke="currentColor"
+               stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12.5" y="4.5" width="7" height="12.5" rx="3.5" />
+            <path d="M8.75 15.5a7.25 7.25 0 0 0 14.5 0" />
+            <path d="M16 22.75V26" />
+            <path d="M11.5 27.25h9" />
+          </svg>
+        </span>
+        <div class="titlebar__text">
+          <h1 class="titlebar__name">Typewhisper</h1>
+          <p class="titlebar__sub">轻量语音输入 · 识别即写 · 大模型纠偏</p>
+        </div>
+      </div>
+      <div class="titlebar__actions">
+        <button class="wbtn" id="btn-minimize" type="button" title="最小化" aria-label="最小化">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M5 12h14" />
+          </svg>
+        </button>
+        <button class="wbtn wbtn--close" id="btn-close" type="button" title="关闭" aria-label="关闭">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- ============================================ 实时状态条（订阅 onStatus） -->
+    <div class="statusbar" id="statusbar">
+      <span class="stage" id="stage" data-stage="idle">
+        <i class="stage__dot"></i><span class="stage__text">空闲</span>
+      </span>
+      <span class="statusbar__divider"></span>
+      <span class="chip" id="chip-model" data-tone="muted">模型 检测中…</span>
+      <span class="chip" id="chip-llm" data-tone="muted">纠偏 检测中…</span>
+      <span class="statusbar__spacer"></span>
+
+      <!-- 实时电平表：只在录音时出现 -->
+      <div class="level" id="level">
+        <span class="micro">LEVEL</span>
+        <span class="level__slot">
+          <i class="level__fill" id="level-fill"></i>
+          <i class="level__peak" id="level-peak"></i>
+        </span>
+        <span class="level__ticks" aria-hidden="true"></span>
+        <span class="micro readout" id="level-value">0.00</span>
+      </div>
+
+      <!-- 快捷键：注册失败时给出「出路」 -->
+      <div class="hotkey" id="hotkey-block">
+        <span class="hotkey__row">
+          <span class="micro">HOTKEY</span>
+          <kbd id="current-accel">—</kbd>
+        </span>
+        <button class="hotkey__err" id="hotkey-error" type="button" hidden></button>
+      </div>
+    </div>
+
+    <!-- ==================================================== 主体：导航 + 内容 -->
+    <div class="shell">
+      <nav class="nav" id="nav" aria-label="设置分类"></nav>
+      <main class="content" id="content"></main>
+    </div>
+
+    <!-- ============================================================== 底栏 -->
+    <footer class="footer">
+      <span class="footer__state" id="dirty-state">正在载入设置…</span>
+      <div class="footer__actions">
+        <button class="btn btn--ghost" id="btn-save-close" type="button">保存并关闭</button>
+        <button class="btn btn--primary" id="btn-save" type="button">保存</button>
+      </div>
+    </footer>
+
+    <!-- 轻提示 -->
+    <div class="toast-host" id="toast-host" aria-live="polite"></div>
+
+    <script type="module" src="./settings.js"></script>
+  </body>
+</html>

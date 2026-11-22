@@ -1,0 +1,47 @@
+# electron-builder 配置
+#
+# 交付形态：**免安装绿色包**（解压即用），不产出 NSIS 安装程序。
+#   - target: dir  → release/win-unpacked/  可直接双击运行
+#   - target: zip  → release/Typewhisper-<版本>-<arch>-免安装.zip  便于拷贝
+appId: io.github.liangshoux.typewhisper
+productName: Typewhisper
+copyright: Typewhisper
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - build/icon.png
+  - package.json
+  - node_modules/**/*
+  - "!**/*.map"
+  - "!**/*.md"
+
+# 原生模块必须从 asar 里解出来：
+#   - .node 扩展名无法在 asar 内 dlopen
+#   - onnxruntime.dll 等依赖 DLL 也无法在 asar 内被加载
+asar: true
+asarUnpack:
+  - "**/*.node"
+  - "**/node_modules/sherpa-onnx-win-x64/**"
+  - "**/node_modules/sherpa-onnx-node/**"
+  - "**/node_modules/@koromix/koffi-win32-x64/**"
+  # utilityProcess 无法执行 asar 内部的脚本，必须解出来
+  - "dist/main/asr-worker.cjs"
+
+win:
+  icon: build/icon.ico
+  # electron-builder 自带的 winCodeSign 压缩包里带符号链接，Windows 普通用户
+  # 创建不了，导致打包失败。这里关掉它自带的签名/图标改写，
+  # 改用 scripts/postprocess-icon.cjs 里的 rcedit 单独打图标。
+  signAndEditExecutable: false
+  target:
+    - target: dir
+    - target: zip
+  artifactName: Typewhisper-${version}-${arch}-免安装.${ext}
+
+compression: normal
+removePackageScripts: true
+npmRebuild: false
