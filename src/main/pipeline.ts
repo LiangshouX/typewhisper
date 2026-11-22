@@ -92,6 +92,7 @@ export class Pipeline extends EventEmitter {
       hotkeyReady: hotkey.isRegistered,
       hotkeyError: hotkey.error,
       captureError: capture.error ?? undefined,
+      micReady: capture.isMicOpen,
       lastResult: this.lastResult,
     };
   }
@@ -183,6 +184,10 @@ export class Pipeline extends EventEmitter {
     const appSettings = settings.get();
     this.target = captureTarget();
 
+    // 先进入录音态：按键已经被收到了，立刻给用户反馈。
+    // 麦克风是按需打开的，这中间有几百毫秒，状态里的 micReady 会如实反映。
+    this.setStage('recording');
+
     try {
       await capture.start();
     } catch (error) {
@@ -193,7 +198,6 @@ export class Pipeline extends EventEmitter {
     }
 
     hotkey.registerCancelKey();
-    this.setStage('recording');
     log.info('pipeline', `开始录音（${appSettings.hotkey.mode === 'hold' ? '按住' : '切换'}模式）`);
   }
 

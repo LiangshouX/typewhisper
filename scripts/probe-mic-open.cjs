@@ -4,10 +4,16 @@
  */
 const { app, BrowserWindow } = require('electron');
 const path = require('node:path');
+const fs = require('node:fs');
+const os = require('node:os');
 
 app.whenReady().then(async () => {
   const win = new BrowserWindow({ show: false });
-  const html = `<!doctype html><html><body><script>
+  // 注意：必须是 file:// 或 app://，data: 不是安全上下文，拿不到 navigator.mediaDevices
+  const tmp = path.join(os.tmpdir(), 'typewhisper-mic-probe.html');
+  fs.writeFileSync(
+    tmp,
+    `<!doctype html><html><body><script>
     window.probe = async (times) => {
       const out = [];
       for (let i = 0; i < times; i++) {
@@ -23,10 +29,11 @@ app.whenReady().then(async () => {
       }
       return out;
     };
-    window.__ready = true;
-  </script></body></html>`;
+  </script></body></html>`,
+    'utf8',
+  );
 
-  await win.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+  await win.loadFile(tmp);
   await new Promise((r) => setTimeout(r, 500));
 
   const times = await win.webContents.executeJavaScript('window.probe(4)');

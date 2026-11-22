@@ -202,6 +202,8 @@ export interface AppStatus {
   hotkeyError?: string;
   /** 麦克风不可用的原因 */
   captureError?: string;
+  /** 麦克风是否已经打开（按需打开时，从按键到设备就绪有几百毫秒） */
+  micReady?: boolean;
   /** 最近一次结果摘要 */
   lastResult?: LastResult;
 }

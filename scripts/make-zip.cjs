@@ -15,7 +15,7 @@ const root = path.join(__dirname, '..');
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const source = process.argv[2] || path.join(root, 'release', 'win-unpacked');
 const outDir = path.join(root, 'release');
-const zipPath = path.join(outDir, `轻语QingYu-${pkg.version}-x64-免安装.zip`);
+const zipPath = path.join(outDir, `${pkg.productName}-${pkg.version}-x64-免安装.zip`);
 
 if (!fs.existsSync(source)) {
   console.error(`找不到目录：${source}`);

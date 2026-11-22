@@ -94,6 +94,24 @@ function releaseMic(): void {
   }
 }
 
+/**
+ * 预热音频设备。
+ *
+ * 第一次 getUserMedia 要把 Chromium 的音频服务拉起来，实测 ~1000ms；
+ * 之后就只要 ~150ms。所以启动时开一次、立刻关掉，把这笔开销提前付掉 ——
+ * 否则用户第一次按快捷键会丢掉开头半秒的话。
+ *
+ * 代价：启动瞬间隐私指示灯会闪一下（很快就灭）。
+ */
+async function warmUpDevice(): Promise<void> {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: audioOptions });
+    for (const track of stream.getTracks()) track.stop();
+  } catch {
+    /* 预热失败不影响正常使用，按下快捷键时还会再试一次 */
+  }
+}
+
 /** 开始采集：开麦 → 恢复音频上下文 → 收流。 */
 async function startCapture(): Promise<void> {
   const startedAt = performance.now();
@@ -142,6 +160,8 @@ window.capture.onCommand((command) => {
 // 页面一加载就先把音频图建好（不碰麦克风），按下快捷键时只需开设备。
 void setupGraph().then(() => {
   window.capture.send({ type: 'ready', sampleRate: context?.sampleRate ?? TARGET_RATE });
+  // 再把设备预热一下，让第一次按键也快
+  void warmUpDevice();
 });
 
 export {};

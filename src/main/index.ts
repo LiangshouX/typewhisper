@@ -42,6 +42,8 @@ if (!app.requestSingleInstanceLock()) {
 function hudDetail(status: AppStatus): string | undefined {
   switch (status.stage) {
     case 'recording': {
+      // 麦克风是按需打开的，还没就绪就如实说明，别让人对着空气说话
+      if (status.micReady === false) return '准备麦克风…';
       const seconds = (Date.now() - recordStartedAt) / 1000;
       return `${seconds.toFixed(1)}s`;
     }
