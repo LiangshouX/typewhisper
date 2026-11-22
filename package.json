@@ -1,7 +1,7 @@
 {
   "name": "typewhisper",
   "productName": "Typewhisper",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Typewhisper — 轻量级 Windows 全局语音输入工具：按住快捷键说话，识别结果直接插入光标位置，并由大模型纠偏。",
   "license": "MIT",
   "author": "typewhisper",

@@ -37,10 +37,10 @@ win:
   # 创建不了，导致打包失败。这里关掉它自带的签名/图标改写，
   # 改用 scripts/postprocess-icon.cjs 里的 rcedit 单独打图标。
   signAndEditExecutable: false
+  # 只出目录，压缩包由 scripts/make-zip.cjs 打（文件名更可控）
   target:
     - target: dir
-    - target: zip
-  artifactName: Typewhisper-${version}-${arch}-免安装.${ext}
+  artifactName: ${productName}-${version}-${arch}-portable.${ext}
 
 compression: normal
 removePackageScripts: true

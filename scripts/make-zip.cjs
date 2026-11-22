@@ -15,7 +15,8 @@ const root = path.join(__dirname, '..');
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const source = process.argv[2] || path.join(root, 'release', 'win-unpacked');
 const outDir = path.join(root, 'release');
-const zipPath = path.join(outDir, `${pkg.productName}-${pkg.version}-x64-免安装.zip`);
+// 文件名只用 ASCII：中文在 CI 的 tar / 控制台编码下会被吃掉（实测「免安装」变成空串）
+const zipPath = path.join(outDir, `${pkg.productName}-${pkg.version}-win-x64-portable.zip`);
 
 if (!fs.existsSync(source)) {
   console.error(`找不到目录：${source}`);

@@ -71,7 +71,7 @@ npm run pack       # 打包成免安装绿色包（不产安装程序）
 ```
 release/
 ├── win-unpacked/                      ← 双击 Typewhisper.exe 直接运行
-└── Typewhisper-0.1.0-x64-免安装.zip    ← 拷给别人的包
+└── Typewhisper-<版本>-win-x64-portable.zip   ← 拷给别人的包
 ```
 
 > 绿色包是免安装的：解压到任意目录双击即可，不写注册表、不装服务。
